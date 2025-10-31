@@ -20,31 +20,54 @@ export function FiltersProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // lee de URL o localStorage
-  const initialSport = (search.get("sport") as SportKey) || (typeof window !== "undefined" && (localStorage.getItem("sport") as SportKey)) || DEFAULT_SPORT;
-  const initialGender = (search.get("gender") as Gender) || (typeof window !== "undefined" && (localStorage.getItem("gender") as Gender)) || DEFAULT_GENDER;
+  // 1) Arranca con defaults para evitar hydration mismatch
+  const [sport, setSport] = useState<SportKey>(DEFAULT_SPORT);
+  const [gender, setGender] = useState<Gender>(DEFAULT_GENDER);
+  const [mounted, setMounted] = useState(false);
 
-  const [sport, setSportState] = useState<SportKey>(initialSport);
-  const [gender, setGenderState] = useState<Gender>(initialGender);
-
-  // sincroniza a URL y localStorage
+  // 2) Al montar, lee URL y localStorage y actualiza estado
   useEffect(() => {
+    let s = DEFAULT_SPORT as SportKey;
+    let g = DEFAULT_GENDER as Gender;
+
+    const urlSport = search.get("sport") as SportKey | null;
+    const urlGender = search.get("gender") as Gender | null;
+
+    // LocalStorage solo en cliente
+    const lsSport = typeof window !== "undefined" ? (localStorage.getItem("sport") as SportKey | null) : null;
+    const lsGender = typeof window !== "undefined" ? (localStorage.getItem("gender") as Gender | null) : null;
+
+    s = urlSport ?? lsSport ?? DEFAULT_SPORT;
+    g = urlGender ?? lsGender ?? DEFAULT_GENDER;
+
+    setSport(s);
+    setGender(g);
+    setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 3) Cuando cambia el estado, sincroniza URL y localStorage (solo tras mount)
+  useEffect(() => {
+    if (!mounted) return;
+
     const params = new URLSearchParams(search.toString());
-    params.set("sport", sport);
-    params.set("gender", gender);
+    if (params.get("sport") !== sport) params.set("sport", sport);
+    if (params.get("gender") !== gender) params.set("gender", gender);
+
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
     if (typeof window !== "undefined") {
       localStorage.setItem("sport", sport);
       localStorage.setItem("gender", gender);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sport, gender]);
+  }, [sport, gender, mounted]);
 
   const value = useMemo<Filters>(() => ({
     sport,
     gender,
-    setSport: setSportState,
-    setGender: setGenderState,
+    setSport,
+    setGender,
   }), [sport, gender]);
 
   return <FiltersCtx.Provider value={value}>{children}</FiltersCtx.Provider>;
