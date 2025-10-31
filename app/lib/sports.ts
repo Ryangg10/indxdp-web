@@ -4,7 +4,8 @@ export type SportKey =
   | "futSoccer"
   | "basket"
   | "softbol"
-  | "tochito";
+  | "tochito"
+  | "voleibol";
 
 export const SPORTS: { key: SportKey; name: string }[] = [
   { key: "fut7",       name: "Fútbol 7" },
@@ -13,6 +14,7 @@ export const SPORTS: { key: SportKey; name: string }[] = [
   { key: "basket",     name: "Básquetbol" },
   { key: "softbol",    name: "Softbol" },
   { key: "tochito",    name: "Tochito" },
+  { key: "voleibol",   name: "Voleibol" },
 ];
 
 export type Gender = "varonil" | "femenil";
