@@ -8,7 +8,7 @@ const FIELDS = [
 export default function CamposPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 text-zinc-900 dark:text-zinc-100">
-      <h1 className="text-2xl md:text-3xl font-bold mb-2">Campos de juego</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-2">Campos, Canchas y Gimnasios de juego</h1>
       <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-6">
         Ubicaciones con enlace directo a Google Maps.
       </p>
