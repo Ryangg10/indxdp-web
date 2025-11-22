@@ -105,12 +105,6 @@ export default function Home() {
           Icon={IdCard}
         />
         <Card
-          title="Uniformes"
-          desc="Kits y colores"
-          href="/routes/uniformes"
-          Icon={Shirt}
-        />
-        <Card
           title="Campos de juego"
           desc="Ubicaciones en Google Maps"
           href="/routes/campos"
